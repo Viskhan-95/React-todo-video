@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import todosBD from './todos';
+import { useState } from "react";
+import Header from './components/Header';
+import Form from './components/Form';
+import Todos from './components/Todos/Todos';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [todos, setTodos] = useState(todosBD);
+    const [text, setText] = useState("");
+
+    const deleteTodo = (indexOfRemovingTodo) => {
+        setTodos(todos.filter((todo, index) => {
+            return index === indexOfRemovingTodo ? false : true
+        }))
+    }
+
+    const makeFavorite = (indexOfFavoritingTodo) => {
+        setTodos(todos.map((todo, indexTodo) => {
+            if(indexOfFavoritingTodo === indexTodo) {
+                return {
+                    ...todo, 
+                    favorite: !todo.favorite
+                }
+            }
+            return todo;
+        }))
+    }
+    
+    const addTodo = () => {
+        setTodos([
+            {
+                text: text,
+                favorite: false
+            },
+            ...todos,
+        ])
+        setText("");
+    }
+
+    return (
+        <div className="app" >
+            <Header />
+            <Form text={text} setText={setText} addTodo={addTodo}/>
+            <Todos todos={todos} deleteTodo={deleteTodo} makeFavorite={makeFavorite} />
+        </div>
+    );
 }
 
 export default App;
